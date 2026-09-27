@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+roms/*.nds
+roms/*.sav
+!roms/.gitkeep
+client/build/
+client/*.nds

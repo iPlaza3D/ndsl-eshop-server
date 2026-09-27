@@ -1,0 +1,16 @@
+services:
+  ndsl-eshop:
+    build: ./server
+    image: iplaza3d/ndsl-shop-server:latest
+    container_name: ndsl-eshop-server
+    ports:
+      - "8000:8000"
+    volumes:
+      # Ruta configurable via .env (ROMS_HOST_PATH): carpeta local o carpeta
+      # de un NAS ya montado en el host (unidad de red / punto de montaje).
+      - ${ROMS_HOST_PATH:-./roms}:/roms:ro
+    environment:
+      - ROMS_DIR=/roms
+      - SERVER_NAME=${SERVER_NAME:-NDSL eShop}
+      - CACHE_TTL_SECONDS=${CACHE_TTL_SECONDS:-300}
+    restart: unless-stopped

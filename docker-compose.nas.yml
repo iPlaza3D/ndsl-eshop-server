@@ -1,0 +1,23 @@
+# Ejemplo alternativo: monta el share del NAS DIRECTO desde Docker (sin
+# necesidad de montarlo antes en el host), usando el driver de volumen local
+# con CIFS/SMB. Util en NAS tipo Synology/Unraid/TrueNAS con Docker.
+#
+# Uso:
+#   1. Copia las credenciales a un archivo ".env" (NAS_HOST, NAS_SHARE, etc.)
+#   2. docker compose -f docker-compose.yml -f docker-compose.nas.yml up --build -d
+#
+# Nota: reemplaza el volumen bind-mount de docker-compose.yml por este volumen
+# nombrado con driver_opts de CIFS. Ajusta "type" a "nfs" si tu NAS usa NFS.
+
+services:
+  ndsl-eshop:
+    volumes:
+      - roms_nas:/roms:ro
+
+volumes:
+  roms_nas:
+    driver: local
+    driver_opts:
+      type: cifs
+      device: "//${NAS_HOST}/${NAS_SHARE}"
+      o: "username=${NAS_USER},password=${NAS_PASSWORD},ro,vers=3.0"
