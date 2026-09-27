@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <p class="subtitle">{{ games|length }} juego(s) en la biblioteca</p>
+  {% if not games %}
+    <p class="empty">No hay roms .nds en la carpeta configurada. Copialas y presiona "Rescanear" en <a href="/settings">Ajustes</a>.</p>
+  {% else %}
+  <div class="grid">
+    {% for game in games %}
+    <div class="card">
+      {% if game.has_icon %}
+        <img class="icon" src="/api/games/{{ game.id }}/icon.png" alt="">
+      {% else %}
+        <div class="icon icon-placeholder">NDS</div>
+      {% endif %}
+      <div class="card-title">{{ game.title }}</div>
+      <div class="card-size">{{ (game.size_bytes / 1048576) | round(1) }} MB</div>
+      <a class="download-btn" href="/download/{{ game.id }}">Descargar</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endblock %}

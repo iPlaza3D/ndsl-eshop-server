@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Ajustes</h2>
+  <table class="settings-table">
+    <tr><td>Carpeta de roms</td><td><code>{{ roms_dir }}</code></td></tr>
+    <tr><td>Juegos detectados</td><td>{{ games_count }}</td></tr>
+    <tr><td>Cache del catalogo</td><td>{{ cache_ttl }} segundos</td></tr>
+  </table>
+  <p class="hint">
+    La carpeta de roms se configura con la variable de entorno
+    <code>ROMS_HOST_PATH</code> en <code>.env</code> (ver README). Cambiarla
+    requiere reiniciar el contenedor.
+  </p>
+  <form method="post" action="/settings/rescan">
+    <button type="submit">Rescanear biblioteca ahora</button>
+  </form>
+{% endblock %}

@@ -1,14 +1,21 @@
 """API principal del NDSL eShop Server (estilo Ownfoil, para NDS)."""
 import re
+from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, Header, HTTPException
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse, Response, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from . import config, library
 
 app = FastAPI(title=config.SERVER_NAME)
+
+APP_DIR = Path(__file__).parent
+app.mount("/static", StaticFiles(directory=APP_DIR / "static"), name="static")
+templates = Jinja2Templates(directory=APP_DIR / "templates")
 
 CHUNK_SIZE = 64 * 1024
 RANGE_RE = re.compile(r"bytes=(\d*)-(\d*)")
@@ -26,6 +33,47 @@ class GameEntry(BaseModel):
 @app.get("/health")
 def health():
     return {"status": "ok", "server": config.SERVER_NAME}
+
+
+# --- Web de control (dashboard estilo Ownfoil) ---
+
+
+@app.get("/")
+def dashboard(request: Request):
+    catalog = library.get_catalog()
+    games = sorted(catalog.items(), key=lambda kv: kv[1].title.lower())
+    return templates.TemplateResponse(
+        request,
+        "index.html",
+        {
+            "server_name": config.SERVER_NAME,
+            "games": [
+                {"id": rom_id, "title": info.title, "size_bytes": info.size_bytes, "has_icon": info.icon_png is not None}
+                for rom_id, info in games
+            ],
+        },
+    )
+
+
+@app.get("/settings")
+def settings_page(request: Request):
+    catalog = library.get_catalog()
+    return templates.TemplateResponse(
+        request,
+        "settings.html",
+        {
+            "server_name": config.SERVER_NAME,
+            "roms_dir": str(config.ROMS_DIR),
+            "cache_ttl": config.CACHE_TTL_SECONDS,
+            "games_count": len(catalog),
+        },
+    )
+
+
+@app.post("/settings/rescan")
+def settings_rescan():
+    library.get_catalog(force=True)
+    return RedirectResponse(url="/settings", status_code=303)
 
 
 @app.get("/api/games", response_model=list[GameEntry])

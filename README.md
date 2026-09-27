@@ -19,6 +19,9 @@ flashcart / TWiLight Menu++ lo lance).
    docker compose up --build -d
    ```
 3. El server queda escuchando en `http://<tu-ip-lan>:8000`.
+4. Abre `http://<tu-ip-lan>:8000` en el navegador para la web de control
+   (biblioteca con iconos y descarga directa, y `/settings` con el estado
+   y boton de rescaneo).
 
 ### Opcion B: montar el share del NAS directo desde Docker (CIFS/SMB)
 
@@ -37,6 +40,8 @@ Para NFS, cambia `type: cifs` por `type: nfs` y ajusta `o:`/`device:` en
 
 ### Endpoints
 
+- `GET /` — web de control: biblioteca con iconos, titulo, tamano y descarga.
+- `GET /settings` — estado del servidor y boton para rescanear la biblioteca.
 - `GET /health` — estado del servidor.
 - `GET /api/games` — catalogo (id, titulo, game_code, filename, size_bytes, has_icon).
 - `GET /api/games/{id}/icon.png` — icono 32x32 extraido del banner del rom.
