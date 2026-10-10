@@ -1,22 +1,75 @@
 {% extends "base.html" %}
 {% block content %}
-  <p class="subtitle">{{ games|length }} juego(s) en la biblioteca</p>
+  {% if games %}
+  <div class="library-toolbar">
+    <label class="search-field">
+      <span>Buscar en la biblioteca</span>
+      <input id="game-search" type="search" placeholder="Título, archivo o código" autocomplete="off">
+    </label>
+    <label class="sort-field" for="game-sort">
+      <span>Ordenar</span>
+      <select id="game-sort">
+        <option value="title-asc">Título: A-Z</option>
+        <option value="title-desc">Título: Z-A</option>
+        <option value="size-asc">Tamaño: menor primero</option>
+        <option value="size-desc">Tamaño: mayor primero</option>
+      </select>
+    </label>
+    <p class="subtitle" id="game-count" aria-live="polite">{{ games|length }} juego{% if games|length != 1 %}s{% endif %}</p>
+  </div>
+  {% endif %}
   {% if not games %}
     <p class="empty">No hay roms .nds en la carpeta configurada. Copialas y presiona "Rescanear" en <a href="/settings">Ajustes</a>.</p>
   {% else %}
-  <div class="grid">
+  <div class="grid" id="game-grid">
     {% for game in games %}
-    <div class="card">
+    <div class="card" data-search="{{ (game.title ~ ' ' ~ game.filename ~ ' ' ~ game.game_code)|lower }}" data-title="{{ game.title|lower }}" data-size="{{ game.size_bytes }}">
       {% if game.has_icon %}
         <img class="icon" src="/api/games/{{ game.id }}/icon.png" alt="">
       {% else %}
         <div class="icon icon-placeholder">NDS</div>
       {% endif %}
       <div class="card-title">{{ game.title }}</div>
+      {% if game.game_code %}<div class="card-code">{{ game.game_code }}</div>{% endif %}
       <div class="card-size">{{ (game.size_bytes / 1048576) | round(1) }} MB</div>
       <a class="download-btn" href="/download/{{ game.id }}">Descargar</a>
     </div>
     {% endfor %}
   </div>
+  <p class="empty" id="no-results" hidden>No se encontraron juegos con esa búsqueda.</p>
+  <script>
+    const searchInput = document.getElementById("game-search");
+    const sortSelect = document.getElementById("game-sort");
+    const gameGrid = document.getElementById("game-grid");
+    const gameCount = document.getElementById("game-count");
+    const noResults = document.getElementById("no-results");
+    const gameCards = Array.from(gameGrid.querySelectorAll(".card"));
+
+    function updateLibrary() {
+      const query = searchInput.value.trim().toLowerCase();
+      const sort = sortSelect.value;
+      const visibleCards = gameCards.filter((card) => {
+        const matches = card.dataset.search.includes(query);
+        card.hidden = !matches;
+        return matches;
+      });
+
+      visibleCards.sort((first, second) => {
+        const direction = sort.endsWith("desc") ? -1 : 1;
+        if (sort.startsWith("size")) {
+          return (Number(first.dataset.size) - Number(second.dataset.size)) * direction;
+        }
+        return first.dataset.title.localeCompare(second.dataset.title) * direction;
+      });
+      visibleCards.forEach((card) => gameGrid.appendChild(card));
+
+      const resultWord = visibleCards.length === 1 ? "juego" : "juegos";
+      gameCount.textContent = `${visibleCards.length} de ${gameCards.length} ${resultWord}`;
+      noResults.hidden = visibleCards.length > 0;
+    }
+
+    searchInput.addEventListener("input", updateLibrary);
+    sortSelect.addEventListener("change", updateLibrary);
+  </script>
   {% endif %}
 {% endblock %}

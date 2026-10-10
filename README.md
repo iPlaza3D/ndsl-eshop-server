@@ -13,15 +13,20 @@ flashcart / TWiLight Menu++ lo lance).
    roms. Puede ser la carpeta local `./roms`, o la ruta donde ya tengas
    montado el share del NAS en el host, por ejemplo:
    - Windows: `Z:/roms` (unidad de red mapeada) o `\\NAS\roms` (UNC).
-   - Linux/NAS con Docker (Synology, Unraid, TrueNAS): `/mnt/nas/roms`.
-2. Levanta el servidor:
+   - XPEnology/Synology: por ejemplo, `/volume1/roms`.
+   - Otros Linux/NAS: por ejemplo, `/mnt/nas/roms`.
+2. Descarga la última imagen publicada y levanta el servidor:
    ```powershell
-   docker compose up --build -d
+   docker compose pull
+   docker compose up -d
    ```
 3. El server queda escuchando en `http://<tu-ip-lan>:8000`.
 4. Abre `http://<tu-ip-lan>:8000` en el navegador para la web de control
    (biblioteca con iconos y descarga directa, y `/settings` con el estado
    y boton de rescaneo).
+5. En Container Manager, también puedes crear un proyecto usando la carpeta
+   que contiene `docker-compose.yml` y `.env`; el proyecto descargará la imagen
+   de Docker Hub y montará la ruta indicada en `ROMS_HOST_PATH`.
 
 ### Opcion B: montar el share del NAS directo desde Docker (CIFS/SMB)
 
@@ -29,7 +34,8 @@ Si el host Docker no tiene el share montado de antemano, usa
 `docker-compose.nas.yml` (driver CIFS). Define en `.env`: `NAS_HOST`,
 `NAS_SHARE`, `NAS_USER`, `NAS_PASSWORD`, y levanta con:
 ```powershell
-docker compose -f docker-compose.yml -f docker-compose.nas.yml up --build -d
+docker compose -f docker-compose.yml -f docker-compose.nas.yml pull
+docker compose -f docker-compose.yml -f docker-compose.nas.yml up -d
 ```
 Para NFS, cambia `type: cifs` por `type: nfs` y ajusta `o:`/`device:` en
 `docker-compose.nas.yml` segun tu NAS.

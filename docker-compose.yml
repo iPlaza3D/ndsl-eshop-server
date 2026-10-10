@@ -1,6 +1,5 @@
 services:
   ndsl-eshop:
-    build: ./server
     image: iplaza3d/ndsl-shop-server:latest
     container_name: ndsl-eshop-server
     ports:

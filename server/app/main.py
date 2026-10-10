@@ -48,7 +48,14 @@ def dashboard(request: Request):
         {
             "server_name": config.SERVER_NAME,
             "games": [
-                {"id": rom_id, "title": info.title, "size_bytes": info.size_bytes, "has_icon": info.icon_png is not None}
+                {
+                    "id": rom_id,
+                    "title": info.title,
+                    "game_code": info.game_code,
+                    "filename": info.filename,
+                    "size_bytes": info.size_bytes,
+                    "has_icon": info.icon_png is not None,
+                }
                 for rom_id, info in games
             ],
         },

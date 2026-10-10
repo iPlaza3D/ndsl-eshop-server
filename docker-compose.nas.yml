@@ -4,7 +4,8 @@
 #
 # Uso:
 #   1. Copia las credenciales a un archivo ".env" (NAS_HOST, NAS_SHARE, etc.)
-#   2. docker compose -f docker-compose.yml -f docker-compose.nas.yml up --build -d
+#   2. docker compose -f docker-compose.yml -f docker-compose.nas.yml pull
+#   3. docker compose -f docker-compose.yml -f docker-compose.nas.yml up -d
 #
 # Nota: reemplaza el volumen bind-mount de docker-compose.yml por este volumen
 # nombrado con driver_opts de CIFS. Ajusta "type" a "nfs" si tu NAS usa NFS.
