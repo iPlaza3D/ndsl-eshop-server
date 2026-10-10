@@ -86,7 +86,7 @@ en la memoria del repo (`devkitpro-build.md`).
 ## Publicar / probar en el NAS
 
 La imagen se publica automaticamente en Docker Hub
-(`iplaza3d/ndsl-shop-server`) via GitHub Actions en cada push a `main`
+(`iplaza3d/ndsl-eshop-server`) via GitHub Actions en cada push a `main`
 (ver `.github/workflows/docker-publish.yml`). Requiere configurar en el repo
 de GitHub (Settings > Secrets and variables > Actions):
 
@@ -101,7 +101,7 @@ docker run -d --name ndsl-eshop \
   -p 8000:8000 \
   -v /ruta/a/tus/roms:/roms:ro \
   -e SERVER_NAME="NDSL eShop" \
-  iplaza3d/ndsl-shop-server:latest
+   iplaza3d/ndsl-eshop-server:latest
 ```
 
 ### En el NAS, clonando el repo (usa `docker-compose.yml` / `docker-compose.nas.yml`)

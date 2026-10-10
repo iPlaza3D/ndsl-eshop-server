@@ -1,6 +1,6 @@
 services:
   ndsl-eshop:
-    image: iplaza3d/ndsl-shop-server:latest
+    image: iplaza3d/ndsl-eshop-server:latest
     container_name: ndsl-eshop-server
     ports:
       - "8000:8000"

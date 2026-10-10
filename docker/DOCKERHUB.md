@@ -17,7 +17,7 @@ docker run -d --name ndsl-eshop \
   -p 8000:8000 \
   -v /ruta/a/tus/roms:/roms:ro \
   -e SERVER_NAME="NDSL eShop" \
-  iplaza3d/ndsl-shop-server:latest
+  iplaza3d/ndsl-eshop-server:latest
 ```
 
 ## docker-compose
@@ -25,7 +25,7 @@ docker run -d --name ndsl-eshop \
 ```yaml
 services:
   ndsl-eshop:
-    image: iplaza3d/ndsl-shop-server:latest
+    image: iplaza3d/ndsl-eshop-server:latest
     container_name: ndsl-eshop-server
     ports:
       - "8000:8000"
