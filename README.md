@@ -90,8 +90,9 @@ La imagen se publica automaticamente en Docker Hub
 (ver `.github/workflows/docker-publish.yml`). Requiere configurar en el repo
 de GitHub (Settings > Secrets and variables > Actions):
 
-- `DOCKERHUB_USERNAME`
-- `DOCKERHUB_TOKEN` (access token, no la password, generado en Docker Hub >
+- `DOCKERHUB_USERNAME` (Actions variable o secret, también disponible en el
+   entorno `copilot`)
+- `DOCKERHUB_TOKEN` (Actions secret, access token no la password, generado en Docker Hub >
   Account Settings > Security)
 
 ### En el NAS, sin clonar el repo
